@@ -2,25 +2,15 @@ import React from 'react';
 import Button from '../Button';
 import styles from './ToastPlayground.module.css';
 import ToastShelf from '../ToastShelf';
+import { ToastContext } from '../ToastProvider';
 
 const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 
 function ToastPlayground() {
+  const {createToast } =
+    React.useContext(ToastContext);
   const [message, setMessage] = React.useState('');
   const [variant, setVariant] = React.useState();
-  const [toastList, setToastList] = React.useState([]);
-
-  function createToast() {
-    const newToast = { id: crypto.randomUUID(), message, variant };
-    setToastList([...toastList, newToast]);
-    setMessage('');
-    setVariant('notice');
-  }
-
-  function deleteToast(deleteId) {
-    const remainingToast = toastList.filter(({ id }) => id !== deleteId);
-    setToastList(remainingToast);
-  }
 
   return (
     <div className={styles.wrapper}>
@@ -28,17 +18,14 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      <ToastShelf toasts={toastList} handleDelete={deleteToast} />
-      {/* {showToast && (
-        <Toast variant={variant} onDismiss={handleDismissToast}>
-          {message}
-        </Toast>
-      )} */}
+      <ToastShelf />
       <form
         className={styles.controlsWrapper}
         onSubmit={(e) => {
           e.preventDefault();
-          createToast();
+          createToast(message, variant);
+          setMessage('');
+          setVariant('notice');
         }}
       >
         <div className={styles.row}>
